@@ -1,0 +1,50 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 style="text-align:center; margin-top:50px;">Search Weather</h2>
+
+
+<div style="align-items:center;display: flex;justify-content: center;">
+    <form action="{% url 'home' %}", class="search_box", method="POST">
+        {% csrf_token %}
+        {% if response_data%}
+            <input id="search" type="search" value='{{response_data.location.name}}' autofocus required name="city_name" />
+        {% else %}
+            <input id="search" type="search" placeholder="Enter city name" autofocus required name="city_name" />
+
+        {% endif %}
+        
+           
+    </form>
+</div>
+
+<br/>
+    {% if response_data.success == False %}
+        <div class="weather-card">
+            <h2 style="text-align:center; margin-top:50px;"><span style="color:red">! Unable to find your city, Please try again.</span></h2>
+            
+        </div>
+        
+    {% elif response_data %}
+        
+        <div class="weather-card">
+            <h2 style="text-align:center; margin-top:50px;">Weather in <span style="color:blue">{{response_data.location.name}}</span></h2>
+            <img src="{{ weather_data.current.weather_icons.0 }}" alt="Weather Icon" class="weather-icon">
+            <div class="temperature">{{ response_data.current.temperature }}°C</div>
+            <div class="description">{{ weather_data.description }}</div>
+            <div class="details">
+                <p>Humidity: {{ response_data.current.humidity }}%</p>
+                <p>Weather Discription: {{ response_data.current.weather_descriptions.0 }}</p>
+                <p>Wind Speed: {{ response_data.current.wind_speed }} km/h</p>
+                <p>Wind Direction: {{ response_data.current.wind_dir }}</p>
+                <p>Pressure: {{ response_data.current.pressure }} hPa</p>
+                <p>visibility: {{ response_data.current.visibility }} K.M.</p>
+                
+            </div>
+            
+        </div>
+        
+    {% endif %}
+{% endblock %}
